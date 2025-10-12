@@ -1,10 +1,16 @@
-Django>=5.2,<6.0
-openpyxl>=3.1.2
-pytz>=2023.3
-sqlparse>=0.4.4
-tzdata>=2023.3
-gunicorn>=21.2.0         # for deployment (optional)
-whitenoise>=6.6.0        # for static file serving in production
-django-environ>=0.10.0   # for environment variable management
-
-
+asgiref==3.10.0
+Django==5.2.7
+django-environ==0.12.0
+et_xmlfile==2.0.0
+gunicorn==23.0.0
+numpy==2.2.6
+openpyxl==3.1.5
+packaging==25.0
+pandas==2.3.3
+python-dateutil==2.9.0.post0
+pytz==2025.2
+six==1.17.0
+sqlparse==0.5.3
+typing_extensions==4.15.0
+tzdata==2025.2
+whitenoise==6.11.0
