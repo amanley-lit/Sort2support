@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background-color: #f5f5f5;
+}
+
+h2 {
+    color: #333;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+label {
+    font-weight: bold;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.messages li {
+    background-color: #e0ffe0;
+    border: 1px solid #b2ffb2;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.button-group a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.button-group a:hover {
+    text-decoration: underline;
+}

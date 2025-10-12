@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assessment Upload</title>
+    <link rel="stylesheet" href="{% static 'excel_app/style.css' %}">
+</head>
+<body>
+    <h2>Upload Your Assessment Table</h2>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="file">Choose your Excel file:</label><br>
+        <input type="file" name="file" id="file" accept=".xlsx,.xls"><br><br>
+        <button type="submit">Upload</button>
+    </form>
+
+    <hr>
+
+    <p><strong>Tips:</strong></p>
+    <ul>
+        <li>Include headers like "Student Name", "Score", etc.</li>
+        <li>Accepted formats: .xlsx, .xls</li>
+        <li><a href="#">Download a sample template</a></li>
+    </ul>
+
+    <div class="button-group">
+        <a href="{% url 'dashboard' %}">Back to Dashboard</a> |
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</body>
+</html>
