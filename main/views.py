@@ -20,6 +20,10 @@ from openpyxl import Workbook
 
 # --- Views ---
 
+def under_construction(request):
+    return render(request, 'under_construction.html')
+
+
 @login_required
 def download_template(request):
     wb = Workbook()
