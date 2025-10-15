@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="login-container">
+  <h2>Login to FluentPath</h2>
+  <p class="subtitle">Access your educator dashboard and tools</p>
+
+  {% if form.errors %}
+    <div class="error-message">
+      <strong>Oops!</strong> Please check your email and password.
+    </div>
+  {% endif %}
+
+  <form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="id_username">Email</label>
+      <input type="text" name="username" id="id_username" placeholder="you@example.com" required autofocus>
+    </div>
+
+    <div class="form-group">
+      <label for="id_password">Password</label>
+      <input type="password" name="password" id="id_password" placeholder="••••••••" required>
+    </div>
+
+    <button type="submit" class="btn-primary">Login</button>
+  </form>
+
+  <p class="signup-link">
+    Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>
+  </p>
+</div>
+{% endblock %}

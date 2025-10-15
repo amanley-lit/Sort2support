@@ -1,0 +1,39 @@
+<!-- templates/main/_grouped_tables.html -->
+<h2>{{ concept1_name }}</h2>
+<table class="preview-table">
+  <thead>
+    <tr><th>Group</th><th>Students</th></tr>
+  </thead>
+  <tbody>
+    {% for group, members in groups1.items %}
+      <tr>
+        <td>{{ group }}</td>
+        <td>
+          {% for s in members %}
+            {{ s.name }} ({{ s.ufli_score_1 }}){% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>{{ concept2_name }}</h2>
+<table class="preview-table">
+  <thead>
+    <tr><th>Group</th><th>Students</th></tr>
+  </thead>
+  <tbody>
+    {% for group, members in groups2.items %}
+      <tr>
+        <td>{{ group }}</td>
+        <td>
+          {% for s in members %}
+            {{ s.name }} ({{ s.ufli_score_2 }}){% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+

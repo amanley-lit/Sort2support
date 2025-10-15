@@ -1,0 +1,854 @@
+[
+  {
+    "number": "1",
+    "concept": "a /ǎ/",
+    "irregular_words": "the, a",
+    "total_points": null
+  },
+  {
+    "number": "2",
+    "concept": "m /m/",
+    "irregular_words": "",
+    "total_points": null
+  },
+  {
+    "number": "3",
+    "concept": "s /s/",
+    "irregular_words": "I",
+    "total_points": null
+  },
+  {
+    "number": "4",
+    "concept": "t /t/",
+    "irregular_words": "",
+    "total_points": null
+  },
+  {
+    "number": "5",
+    "concept": "VC & CVC Words",
+    "irregular_words": "and",
+    "total_points": 3
+  },
+  {
+    "number": "6",
+    "concept": "p /p/",
+    "irregular_words": "",
+    "total_points": 3
+  },
+  {
+    "number": "7",
+    "concept": "f /f/",
+    "irregular_words": "a",
+    "total_points": 2
+  },
+  {
+    "number": "8",
+    "concept": "I /ǐ/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "9",
+    "concept": "n /n/",
+    "irregular_words": "is",
+    "total_points": 4
+  },
+  {
+    "number": "10",
+    "concept": "CVC Practice (a, i)",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "11",
+    "concept": "Nasalized A (am, an)",
+    "irregular_words": "as",
+    "total_points": 5
+  },
+  {
+    "number": "12",
+    "concept": "o /ǒ /",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "13",
+    "concept": "d /d/",
+    "irregular_words": "said",
+    "total_points": 4
+  },
+  {
+    "number": "14",
+    "concept": "c /k/",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "15",
+    "concept": "u /ǔ/",
+    "irregular_words": "to, do",
+    "total_points": 4
+  },
+  {
+    "number": "16",
+    "concept": "g /g/",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "17",
+    "concept": "b /b/",
+    "irregular_words": "of",
+    "total_points": 4
+  },
+  {
+    "number": "18",
+    "concept": "e /ě/",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "19",
+    "concept": "VC & CVC Practice (all)",
+    "irregular_words": "see",
+    "total_points": 5
+  },
+  {
+    "number": "20",
+    "concept": "-s /s/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "21",
+    "concept": "-s /z/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "22",
+    "concept": "k /k/",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "23",
+    "concept": "h /h/",
+    "irregular_words": "be, me",
+    "total_points": 5
+  },
+  {
+    "number": "24",
+    "concept": "r /r/ Part 1",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "25",
+    "concept": "r /r/ Part 2",
+    "irregular_words": "from",
+    "total_points": 4
+  },
+  {
+    "number": "26",
+    "concept": "l /l/ Part 1",
+    "irregular_words": "look, book",
+    "total_points": 5
+  },
+  {
+    "number": "27",
+    "concept": "l /l/ Part 2",
+    "irregular_words": "are",
+    "total_points": 4
+  },
+  {
+    "number": "28",
+    "concept": "w /w/",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "29",
+    "concept": "j /j/",
+    "irregular_words": "was",
+    "total_points": 4
+  },
+  {
+    "number": "30",
+    "concept": "y /y/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "31",
+    "concept": "x /ks/",
+    "irregular_words": "you",
+    "total_points": 5
+  },
+  {
+    "number": "32",
+    "concept": "qu /kw/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "33",
+    "concept": "v /v/",
+    "irregular_words": "what, have",
+    "total_points": 4
+  },
+  {
+    "number": "34",
+    "concept": "z /z/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "35a",
+    "concept": "Short A Review",
+    "irregular_words": "the*, I*",
+    "total_points": 5
+  },
+  {
+    "number": "35b",
+    "concept": "Nasalized A Review",
+    "irregular_words": "a*",
+    "total_points": 4
+  },
+  {
+    "number": "35c",
+    "concept": "Short A Advanced Review",
+    "irregular_words": "said*",
+    "total_points": 4
+  },
+  {
+    "number": "36a",
+    "concept": "Short I Review",
+    "irregular_words": "to*, do*",
+    "total_points": 5
+  },
+  {
+    "number": "36b",
+    "concept": "Short I Advanced Review",
+    "irregular_words": "of*, see*",
+    "total_points": 4
+  },
+  {
+    "number": "37a",
+    "concept": "Short O Review",
+    "irregular_words": "he*, be*",
+    "total_points": 4
+  },
+  {
+    "number": "37b",
+    "concept": "Short O Advanced Review",
+    "irregular_words": "me*, from*",
+    "total_points": 4
+  },
+  {
+    "number": "38a",
+    "concept": "Short A, I, O Review",
+    "irregular_words": "the*, said*",
+    "total_points": 5
+  },
+  {
+    "number": "38b",
+    "concept": "Short A, I, O Advanced Review",
+    "irregular_words": "to*, from*",
+    "total_points": 4
+  },
+  {
+    "number": "39a",
+    "concept": "Short U Review",
+    "irregular_words": "look*, book*",
+    "total_points": 4
+  },
+  {
+    "number": "39b",
+    "concept": "Short U Advanced Review",
+    "irregular_words": "are*, was*",
+    "total_points": 5
+  },
+  {
+    "number": "40a",
+    "concept": "Short E Review",
+    "irregular_words": "you*",
+    "total_points": 5
+  },
+  {
+    "number": "40b",
+    "concept": "Short E Advanced Review",
+    "irregular_words": "what*, have*",
+    "total_points": 5
+  },
+  {
+    "number": "41a",
+    "concept": "Short Vowel Review (all)",
+    "irregular_words": "",
+    "total_points": 6
+  },
+  {
+    "number": "41b",
+    "concept": "Short Vowel Advanced Review1 (all)",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "41c",
+    "concept": "Short Vowel Advanced Review 2 (all)",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "42",
+    "concept": "FLSZ Spelling Rule (ff, ll, ss, zz)",
+    "irregular_words": "your, want",
+    "total_points": 4
+  },
+  {
+    "number": "43",
+    "concept": "-all, -oll, -ull",
+    "irregular_words": "no, so",
+    "total_points": 4
+  },
+  {
+    "number": "44",
+    "concept": "ck /k/",
+    "irregular_words": "goes, says",
+    "total_points": 4
+  },
+  {
+    "number": "45",
+    "concept": "sh /sh/",
+    "irregular_words": "she, we",
+    "total_points": 5
+  },
+  {
+    "number": "46",
+    "concept": "Voiced th /th/",
+    "irregular_words": "they, their",
+    "total_points": 4
+  },
+  {
+    "number": "47",
+    "concept": "Unvoiced th /th/",
+    "irregular_words": "were",
+    "total_points": 5
+  },
+  {
+    "number": "48",
+    "concept": "ch /ch/",
+    "irregular_words": "talk, walk",
+    "total_points": 4
+  },
+  {
+    "number": "49",
+    "concept": "Digraphs Review 1",
+    "irregular_words": "she*, they*",
+    "total_points": 5
+  },
+  {
+    "number": "50",
+    "concept": "wh /w/, ph /f/",
+    "irregular_words": "could, would",
+    "total_points": 4
+  },
+  {
+    "number": "51",
+    "concept": "ng /ŋ/",
+    "irregular_words": "or, for",
+    "total_points": 6
+  },
+  {
+    "number": "52",
+    "concept": "nk /ŋk/",
+    "irregular_words": "there, where",
+    "total_points": 4
+  },
+  {
+    "number": "53",
+    "concept": "Digraph Review 2 (incl. CCCVC)",
+    "irregular_words": "should*, there*",
+    "total_points": 4
+  },
+  {
+    "number": "54",
+    "concept": "a_e /ā/",
+    "irregular_words": "who",
+    "total_points": 5
+  },
+  {
+    "number": "55",
+    "concept": "i_e /ī/",
+    "irregular_words": "by, my",
+    "total_points": 6
+  },
+  {
+    "number": "56",
+    "concept": "o_e /ō/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "57",
+    "concept": "Vce Review 1, e_e /ē/",
+    "irregular_words": "who*, my*",
+    "total_points": 5
+  },
+  {
+    "number": "58",
+    "concept": "u_e /ū/, /yū/",
+    "irregular_words": "one, once",
+    "total_points": 4
+  },
+  {
+    "number": "59",
+    "concept": "Vce Review 2 (all)",
+    "irregular_words": "by*, one*",
+    "total_points": 5
+  },
+  {
+    "number": "60",
+    "concept": "_ce /s/",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "61",
+    "concept": "_ge /j/",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "62",
+    "concept": "Vce Review 3, Vce Exceptions",
+    "irregular_words": "once*",
+    "total_points": 4
+  },
+  {
+    "number": "63",
+    "concept": "-es",
+    "irregular_words": "two, does",
+    "total_points": 4
+  },
+  {
+    "number": "64",
+    "concept": "-ed",
+    "irregular_words": "many, any",
+    "total_points": 4
+  },
+  {
+    "number": "65",
+    "concept": "-ing",
+    "irregular_words": "been, into",
+    "total_points": 4
+  },
+  {
+    "number": "66",
+    "concept": "Closed & Open Syllables",
+    "irregular_words": "friend",
+    "total_points": 4
+  },
+  {
+    "number": "67a",
+    "concept": "Compound Words",
+    "irregular_words": "because",
+    "total_points": 4
+  },
+  {
+    "number": "67b",
+    "concept": "Closed/Closed",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "68",
+    "concept": "Open/Closed",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "69",
+    "concept": "tch /ch/",
+    "irregular_words": "woman, women",
+    "total_points": 4
+  },
+  {
+    "number": "70",
+    "concept": "dge /j/",
+    "irregular_words": "move",
+    "total_points": 4
+  },
+  {
+    "number": "71",
+    "concept": "tch /ch/, dge /j/ Review",
+    "irregular_words": "woman*, move*",
+    "total_points": 4
+  },
+  {
+    "number": "72",
+    "concept": "Long VCC (-ild, -old, -ind, -olt, -ost)",
+    "irregular_words": "both",
+    "total_points": 5
+  },
+  {
+    "number": "73",
+    "concept": "y /ī/",
+    "irregular_words": "four, fourth",
+    "total_points": 4
+  },
+  {
+    "number": "74",
+    "concept": "y /ē/",
+    "irregular_words": "forty",
+    "total_points": 4
+  },
+  {
+    "number": "75",
+    "concept": "-le",
+    "irregular_words": "people",
+    "total_points": 4
+  },
+  {
+    "number": "76",
+    "concept": "Ending Patterns Review",
+    "irregular_words": "four*, people*",
+    "total_points": 5
+  },
+  {
+    "number": "77",
+    "concept": "ar /ar/",
+    "irregular_words": "pretty",
+    "total_points": 4
+  },
+  {
+    "number": "78",
+    "concept": "or /or/, ore /or/",
+    "irregular_words": "nothing",
+    "total_points": 4
+  },
+  {
+    "number": "79",
+    "concept": "ar /ar/ & or, ore /or/ Review",
+    "irregular_words": "pretty*, nothing*",
+    "total_points": 4
+  },
+  {
+    "number": "80",
+    "concept": "er /er/",
+    "irregular_words": "other, another",
+    "total_points": 4
+  },
+  {
+    "number": "81",
+    "concept": "ir, ur /er/",
+    "irregular_words": "mother, brother",
+    "total_points": 4
+  },
+  {
+    "number": "82",
+    "concept": "Spelling /er/: er, ir, ur, w + or",
+    "irregular_words": "other*, mother*",
+    "total_points": 5
+  },
+  {
+    "number": "83",
+    "concept": "R-Controlled Vowels Review",
+    "irregular_words": "father, water",
+    "total_points": 5
+  },
+  {
+    "number": "84",
+    "concept": "ai, ay, /ā/",
+    "irregular_words": "today, very",
+    "total_points": 4
+  },
+  {
+    "number": "85",
+    "concept": "ee, ea, ey /ē/",
+    "irregular_words": "above, among",
+    "total_points": 4
+  },
+  {
+    "number": "86",
+    "concept": "oa, ow, oe /ō/",
+    "irregular_words": "again, against",
+    "total_points": 4
+  },
+  {
+    "number": "87",
+    "concept": "ie, igh /ī/",
+    "irregular_words": "always, almost",
+    "total_points": 4
+  },
+  {
+    "number": "88",
+    "concept": "Vowel Teams Review 1",
+    "irregular_words": "very*, again*",
+    "total_points": 5
+  },
+  {
+    "number": "89",
+    "concept": "oo, u /oo/",
+    "irregular_words": "floor, poor",
+    "total_points": 5
+  },
+  {
+    "number": "90",
+    "concept": "oo /ū/",
+    "irregular_words": "won, son",
+    "total_points": 4
+  },
+  {
+    "number": "91",
+    "concept": "ew, ui, ue /ū/",
+    "irregular_words": "month",
+    "total_points": 5
+  },
+  {
+    "number": "92",
+    "concept": "Vowel Teams Review 2",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "93",
+    "concept": "au, aw, augh /aw/",
+    "irregular_words": "hour, minute",
+    "total_points": 4
+  },
+  {
+    "number": "94",
+    "concept": "ea /ě/, a /ǒ/",
+    "irregular_words": "Monday, Wednesday",
+    "total_points": 4
+  },
+  {
+    "number": "95",
+    "concept": "oi, oy /oi/",
+    "irregular_words": "February",
+    "total_points": 4
+  },
+  {
+    "number": "96",
+    "concept": "ou, ow /ow/",
+    "irregular_words": "eye, heart",
+    "total_points": 4
+  },
+  {
+    "number": "97",
+    "concept": "Vowel Teams & Dipthongs Review",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "98",
+    "concept": "kn /n/, wr /r/, mb /m/",
+    "irregular_words": "about",
+    "total_points": 4
+  },
+  {
+    "number": "99",
+    "concept": "-s/ -es",
+    "irregular_words": "answer",
+    "total_points": 4
+  },
+  {
+    "number": "100",
+    "concept": "-er/ -est",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "101",
+    "concept": "-ly",
+    "irregular_words": "honest, honor",
+    "total_points": 4
+  },
+  {
+    "number": "102",
+    "concept": "-less, -ful",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "103",
+    "concept": "un-",
+    "irregular_words": "truth, truly",
+    "total_points": 4
+  },
+  {
+    "number": "104",
+    "concept": "pre-, re-",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "105",
+    "concept": "dis-",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "106",
+    "concept": "Affixes Review 1",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "107",
+    "concept": "Doubling Rule -ed, -ing",
+    "irregular_words": "busy",
+    "total_points": 4
+  },
+  {
+    "number": "108",
+    "concept": "Doubling Rule -er, -est",
+    "irregular_words": "build, built",
+    "total_points": 4
+  },
+  {
+    "number": "109",
+    "concept": "Drop -e Rule",
+    "irregular_words": "sure",
+    "total_points": 4
+  },
+  {
+    "number": "110",
+    "concept": "-y to i Rule",
+    "irregular_words": "laugh",
+    "total_points": 4
+  },
+  {
+    "number": "111",
+    "concept": "-ar, -or, /er/",
+    "irregular_words": "who, whom",
+    "total_points": 4
+  },
+  {
+    "number": "112",
+    "concept": "air, are, ear, /air/",
+    "irregular_words": "whose",
+    "total_points": 4
+  },
+  {
+    "number": "113",
+    "concept": "ear /ear/",
+    "irregular_words": "toward",
+    "total_points": 4
+  },
+  {
+    "number": "114",
+    "concept": "Alternate /ā/, (ei, ey, eigh, aigh, ea)",
+    "irregular_words": "through",
+    "total_points": 4
+  },
+  {
+    "number": "115",
+    "concept": "Alternate Long U (ew, eu, ue /yū/; ou /ū/",
+    "irregular_words": "learn, earth",
+    "total_points": 4
+  },
+  {
+    "number": "116",
+    "concept": "ough /aw/, /ō/",
+    "irregular_words": "buy, guy",
+    "total_points": 4
+  },
+  {
+    "number": "117",
+    "concept": "Signal Vowels (c /s/, g /j/)",
+    "irregular_words": "guess, guest",
+    "total_points": 4
+  },
+  {
+    "number": "118",
+    "concept": "ch /sh/, /k/; gn /n/, gh /g/; silent t",
+    "irregular_words": "young, touch",
+    "total_points": 4
+  },
+  {
+    "number": "119",
+    "concept": "-sion, -tion",
+    "irregular_words": "enough, tough",
+    "total_points": 4
+  },
+  {
+    "number": "120",
+    "concept": "-ture",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "121",
+    "concept": "-er, -or, -ist",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "122",
+    "concept": "-ish",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "123",
+    "concept": "-y",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "124",
+    "concept": "-ness",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "125",
+    "concept": "-ment",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "126",
+    "concept": "-able, -ible",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "127",
+    "concept": "unl-, bl-, tri",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "128",
+    "concept": "Affixes Review 2",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "129",
+    "concept": "Generic 3 point assessment",
+    "irregular_words": "",
+    "total_points": 3
+  },
+  {
+    "number": "130",
+    "concept": "Generic 4 point assessment",
+    "irregular_words": "",
+    "total_points": 4
+  },
+  {
+    "number": "131",
+    "concept": "Generic 5 point assessment",
+    "irregular_words": "",
+    "total_points": 5
+  },
+  {
+    "number": "132",
+    "concept": "Generic 6 point Assessment",
+    "irregular_words": "",
+    "total_points": 6
+  }
+]

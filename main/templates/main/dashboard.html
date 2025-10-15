@@ -1,0 +1,325 @@
+{% extends "main/base.html" %}
+{% load custom_tags %}
+{% load static %}
+
+{% block head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'main/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h2>Welcome back, teachers!</h2>
+  <p>Let's Sort2Support!</p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{% static 'main/styles.css' %}">
+</head>
+<body>
+  <header>
+    <h1 class="logo"><span class="logo-highlight">Sort</span>2Support</h1>
+  </header>
+  
+  <div class="dashboard-toolbar">
+    <a href="{% url 'upload_excel' %}" class="dashboard-button">Upload Excel</a>
+    <a href="{% url 'download_template' %}" class="dashboard-button">Download Template</a>
+    <a href="{% url 'export_excel' %}" class="dashboard-button">Export</a>
+    <form method="post" action="{% url 'reset_class' %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" name="clear_names" value="true" class="dashboard-button danger">
+        Reset Class
+      </button>
+    </form>
+  </div>
+
+
+  <!-- Teacher instructions banner -->
+  <div class="alert-info" style="margin-top: 15px;">
+    <strong>How to use this dashboard:</strong>
+    <ul>
+      <li>Choose a student entry method (by class size, paste from Excel, or manual).</li>
+      <li>Fill in student names and scores in the table below.</li>
+      <li>Click <em>Save & Sort</em> to save your class. Your students will be remembered next time you log in.</li>
+      <li>You can update scores directly in the table and re‑save, or change the concepts using the dropdowns above.</li>
+      <li>Use <em>Clear Scores Only</em> to reset scores but keep names, or <em>Reset Entire Class</em> to start fresh.</li>
+    </ul>
+  </div>
+
+  <div class="upload-section">
+    <h3>Class Roster</h3>
+    <p>You can upload an Excel file to populate your student list.</p>
+
+    <a href="{% url 'upload_excel' %}" class="btn btn-primary">Upload Excel File</a>
+    <br><br>
+    <a href="{% url 'download_template' %}" class="btn btn-secondary">Download Blank Template</a>
+    <br>
+    <small>(Optional — you can also upload your own file if it has the required headings:
+    <strong>Name, Score 1, Score 2</strong>.)</small>
+  </div>
+
+  <!-- 🧠 Step 1: Select Concepts -->
+  <form method="post" id="scoreForm" action="#groupResults">
+    {% csrf_token %}
+
+    <h3>Select UFLI Concepts</h3>
+    <label for="lesson_1">Concept 1:</label>
+    <select name="lesson_1" id="lesson_1">
+      <option value="">-- None --</option>
+      {% for lesson in ufli_lessons %}
+        <option value="{{ lesson.number }}" data-max="{{ lesson.total_points }}"
+          {% if lesson_1 and lesson_1.number == lesson.number %}selected{% endif %}>
+          Lesson {{ lesson.number }} – {{ lesson.concept }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label for="lesson_2">Concept 2:</label>
+    <select name="lesson_2" id="lesson_2">
+      <option value="">-- None --</option>
+      {% for lesson in ufli_lessons %}
+        <option value="{{ lesson.number }}" data-max="{{ lesson.total_points }}"
+          {% if lesson_2 and lesson_2.number == lesson.number %}selected{% endif %}>
+          Lesson {{ lesson.number }} – {{ lesson.concept }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <hr>
+    <h2>Preview Students</h2>
+    <table class="assessment-table">
+      <thead>
+        <tr><th>Name</th><th>Score 1</th><th>Score 2</th></tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+          <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.ufli_score_1 }}</td>
+            <td>{{ s.ufli_score_2 }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <form method="post" action="{% url 'save_uploaded_students' %}">
+      {% csrf_token %}
+      {% for s in students %}
+        <input type="hidden" name="name" value="{{ s.name }}">
+        <input type="hidden" name="score1" value="{{ s.ufli_score_1 }}">
+        <input type="hidden" name="score2" value="{{ s.ufli_score_2 }}">
+      {% endfor %}
+      <button type="submit" class="dashboard-button">Save & Sort</button>
+    </form>
+
+    <!-- 🧠 Step 2: Student Entry -->
+    <h3>Choose Student Entry Method</h3>
+    <select id="entryMode">
+      <option value="size">By Class Size</option>
+      <option value="paste">Paste from Excel</option>
+      <option value="manual">Manual Entry</option>
+    </select>
+
+    <br><br>
+
+    <!-- Class size entry -->
+    <div id="classSizeEntry">
+      <label for="class_size">How many students?</label>
+      <input type="number" name="class_size" id="class_size" min="1" placeholder="e.g. 12">
+      <button type="submit" name="enter_by_class_size" value="true">Build Table</button>
+    </div>
+
+    <!-- Paste entry -->
+    <div id="pasteEntry" style="display:none;">
+      <label for="pasteArea">Paste names and scores from Excel:</label><br>
+      <textarea id="pasteArea" placeholder="Paste from Excel or type: Alice 3 4 or Joshua,2,3"></textarea><br>
+      <button type="button" id="previewButton">Preview Table</button><br>
+      <small>Tip: Paste directly from Excel, or type using commas or double spaces.</small>
+      <div id="pasteError" style="color: red; font-weight: bold; margin-top: 10px;"></div>
+    </div>
+
+    <!-- Manual entry -->
+    <div id="manualEntry" style="display:none;">
+      <p>Manual entry form coming soon…</p>
+    </div>
+
+    <!-- Student table -->
+    {% if students %}
+      <h3>Saved Students</h3>
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>
+              {% if lesson_1 %}
+                {{ lesson_1.concept }} (Max {{ lesson_1.total_points }})
+              {% else %}
+                Concept 1
+              {% endif %}
+            </th>
+            <th>
+              {% if lesson_2 %}
+                {{ lesson_2.concept }} (Max {{ lesson_2.total_points }})
+              {% else %}
+                Concept 2
+              {% endif %}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+            <tr>
+              <td><input type="text" name="student_name_{{ forloop.counter }}" value="{{ student.name }}"></td>
+              <td>
+                <select name="ufli_score_1_{{ forloop.counter }}">
+                  <option value="" {% if not student.ufli_score_1 %}selected{% endif %}></option>
+                  {% if lesson_1 %}
+                    {% for s in lesson_1.total_points|get_range %}
+                      <option value="{{ s }}" {% if student.ufli_score_1 == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </td>
+              <td>
+                <select name="ufli_score_2_{{ forloop.counter }}">
+                  <option value="" {% if not student.ufli_score_2 %}selected{% endif %}></option>
+                  {% if lesson_2 %}
+                    {% for s in lesson_2.total_points|get_range %}
+                      <option value="{{ s }}" {% if student.ufli_score_2 == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Save & Sort button -->
+      <button type="submit" name="save_and_sort" value="true" class="btn btn-primary">
+        🚀 {% include "main/_logo.html" %}
+      </button>
+    {% endif %}
+  </form>
+
+  <!-- Reset buttons -->
+  <form method="post" style="margin-top: 20px; display: flex; gap: 10px;">
+    {% csrf_token %}
+    <button type="submit" name="reset_scores" value="true" class="btn btn-warning">🧹 Clear Scores Only</button>
+    <button type="submit" name="clear_names" value="true" class="btn btn-danger"
+            onclick="return confirm('Are you sure you want to reset the entire class?')">
+      🔄 Reset Entire Class
+    </button>
+  </form>
+
+  <!-- Export form -->
+  {% if grouped_html %}
+    <form method="post" action="{% url 'export_students_excel' %}" style="margin-top: 20px;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success">📊 Export to Excel</button>
+    </form>
+  {% endif %}
+
+  <!-- Grouped results preview -->
+  {% if grouped_html %}
+    <div id="groupResults" style="margin-top: 30px;">
+      <div class="results-layout">
+        <div class="main-results">
+          <div class="collapsible-section">
+            <button type="button" class="collapsible-toggle" onclick="toggleGroupingInfo()">
+              ▶ Grouping Info
+            </button>
+            <div id="groupingInfoContent" class="collapsible-content">
+              <p>
+                Based on:
+                {% if lesson_1 %}
+                  <strong>{{ lesson_1.concept }} (Max {{ lesson_1.total_points }})</strong>
+                {% endif %}
+                {% if lesson_2 %}
+                  and <strong>{{ lesson_2.concept }} (Max {{ lesson_2.total_points }})</strong>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+          <h3>Reorganized Groupings</h3>
+          <div class="table-container">
+            {{ grouped_html|safe }}
+          </div>
+        </div>
+
+
+        <div class="side-keys">
+          <!-- 🎨 Reference Table -->
+          <h3>How Students Are Grouped</h3>
+          <p>Each student's score is converted to a percentage based on the total possible points for the concept. This percentage determines their color group:</p>
+
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th>Score Range</th>
+                <th>Color Group</th>
+                <th>Interpretation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0–25%</td><td style="color: red;"><strong>Red</strong></td><td>Needs intensive support</td></tr>
+              <tr><td>26–60%</td><td style="color: orange;"><strong>Yellow</strong></td><td>Emerging understanding</td></tr>
+              <tr><td>61–99%</td><td style="color: green;"><strong>Green</strong></td><td>Approaching mastery</td></tr>
+              <tr><td>100%</td><td style="color: blue;"><strong>Blue</strong></td><td>Ready to move on</td></tr>
+            </tbody>
+          </table>
+
+          <!-- 🧀 Snack Legend -->
+          <h3>Snack Group Legend</h3>
+          <ul class="snack-legend">
+            <li><img src="{% static 'main/images/chips.png' %}" class="snack-icon"> Chips – Yellow – Emerging readers</li>
+            <li><img src="{% static 'main/images/salsa.png' %}" class="snack-icon"> Salsa – Red – Needs support</li>
+            <li><img src="{% static 'main/images/queso.png' %}" class="snack-icon"> Queso – Orange – Building fluency</li>
+            <li><img src="{% static 'main/images/guac.png' %}" class="snack-icon"> Guac – Green – Ready to stretch</li>
+          </ul>
+        </div> <!-- end side-keys -->
+      </div> <!-- end results-layout -->
+    </div> <!-- end groupResults -->
+  {% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const entryMode = document.getElementById("entryMode");
+  const classSizeEntry = document.getElementById("classSizeEntry");
+  const pasteEntry = document.getElementById("pasteEntry");
+  const manualEntry = document.getElementById("manualEntry");
+
+  function toggleEntryMode() {
+    const mode = entryMode.value;
+    classSizeEntry.style.display = (mode === "size") ? "block" : "none";
+    pasteEntry.style.display = (mode === "paste") ? "block" : "none";
+    manualEntry.style.display = (mode === "manual") ? "block" : "none";
+  }
+
+  // Run once on page load
+  toggleEntryMode();
+
+  // Run whenever the dropdown changes
+  entryMode.addEventListener("change", toggleEntryMode);
+});
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'main/js/dashboard.js' %}"></script>
+{% endblock %}
+

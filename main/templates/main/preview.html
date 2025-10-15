@@ -1,0 +1,46 @@
+{% load static %}
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Upload Preview</h2>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Score 1</th>
+            <th>Score 2</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.ufli_score_1 }}</td>
+            <td>{{ student.ufli_score_2 }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <button id="preview-btn">Preview</button>
+    <button id="save-btn">Save</button>
+
+    <h2>Preview Data</h2>
+    <div class="table-container">
+      {{ table|safe }}
+    </div>
+
+    <form method="post" action="{% url 'dashboard' %}">
+      {% csrf_token %}
+      <button type="submit">Save & Sort</button>
+    </form>
+
+    <form method="post" action="{% url 'save_uploaded_students' %}">
+      {% csrf_token %}
+      {% for s in students %}
+        <input type="hidden" name="name" value="{{ s.name }}">
+        <input type="hidden" name="score1" value="{{ s.ufli_score_1 }}">
+        <input type="hidden" name="score2" value="{{ s.ufli_score_2 }}">
+      {% endfor %}
+      <button type="submit" class="btn btn-success">Save & Sort</button>
+    </form>
+ 
+{% endblock %}
+
