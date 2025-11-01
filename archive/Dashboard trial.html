@@ -1,0 +1,151 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'main/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Greeting -->
+<div class="dashboard-header">
+  <h2>Welcome back, teachers!</h2>
+  <div class="brand-line">
+    <span class="lead-in">Let’s</span>
+    <span class="sort2support-brand">
+      <span class="sort">Sort</span><span class="two">2</span><span class="support">Support</span>
+    </span>
+    <span class="lead-out">!</span>
+  </div>
+</div>
+
+<hr>
+
+<!-- Info Table -->
+<section class="info-section">
+  <h3>How to Use This Site</h3>
+  <table class="info-table">
+    <tr>
+      <th>Step</th>
+      <th>What to Do</th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Upload or enter your class roster</td>
+      <td>Students appear in a preview table</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Edit or save your roster</td>
+      <td>Roster is stored for sorting</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Click <strong>Sort2Support</strong></td>
+      <td>Students are grouped by color & intervention plan</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Export results</td>
+      <td>Download Excel with roster + weekly plans</td>
+    </tr>
+  </table>
+</section>
+
+<hr>
+
+<!-- Step 1: Upload / Enter Manually / Use Saved Roster -->
+<section class="dashboard-step">
+  <h3>Step 1: Enter Student Data</h3>
+  <p>Download a template for your data, upload data, Enter manually or use saved roster.</p>
+
+  <div class="button-row">
+    <a href="{% url 'excel_app:parse_excel_upload' %}" class="btn btn-primary">
+      📤 Upload Excel File
+    </a>
+
+    <a href="{% url 'main:download_template' %}" class="btn btn-secondary">
+      📄 Download Blank Template
+    </a>
+
+    <form method="post" action="{% url 'main:reset_class' %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">🔄 Reset Class</button>
+    </form>
+  </div>
+</section>
+
+<hr>
+
+
+<!-- Step 2: Preview & Edit -->
+<section class="dashboard-step">
+  <h3>Step 2: Preview & Edit</h3>
+  {% if students %}
+    <form method="post" action="{% url 'excel_app:save_student_scores' %}">
+      {% csrf_token %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Score 1</th>
+            <th>Score 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in students %}
+            <tr>
+              <td><input type="text" name="name_{{ forloop.counter }}" value="{{ s.name }}"></td>
+              <td><input type="number" name="score1_{{ forloop.counter }}" value="{{ s.score1 }}"></td>
+              <td><input type="number" name="score2_{{ forloop.counter }}" value="{{ s.score2 }}"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <input type="hidden" name="total_rows" value="{{ students|length }}">
+      <button type="submit" class="btn btn-warning">💾 Save Draft</button>
+    </form>
+  {% else %}
+    <p>No roster loaded yet. Upload or build one in Step 1.</p>
+  {% endif %}
+</section>
+
+<hr>
+<a href="{% url 'excel_app:preview_uploaded_students' %}" class="btn btn-warning">👀 Preview Roster</a>
+
+<!-- Step 3: Sort2Support -->
+<section class="dashboard-step">
+  <h3>Step 3: Run Grouping</h3>
+  {% if students %}
+    <form method="post" action="{% url 'excel_app:run_sorting' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn sort2support-btn">🚀 Sort2Support</button>
+    </form>
+  {% else %}
+    <p>Load and save a roster first.</p>
+  {% endif %}
+</section>
+
+<hr>
+<form method="post" action="{% url 'excel_app:sort2support' %}">
+  {% csrf_token %}
+  <button type="submit" class="btn sort2support-btn">🚀 Sort2Support</button>
+</form>
+
+<!-- Step 4: Export -->
+<section class="dashboard-step">
+  <h3>Step 4: Export Results</h3>
+  {% if grouped %}
+    <a href="{% url 'main:export_preview_excel' %}" class="btn btn-success">
+      📊 Export Grouped Results
+    </a>
+  {% else %}
+    <p>Run Sort2Support first to unlock export.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

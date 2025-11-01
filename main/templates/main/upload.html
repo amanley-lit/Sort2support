@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h2>📤 Upload Your Assessment Table</h2>
+
+<div class="upload-card">
+  <!-- Upload Form -->
+ <form method="POST" enctype="multipart/form-data" action="{% url 'main:dashboard' %}">
+    {% csrf_token %}
+    <label for="file"><strong>Choose your Excel file:</strong></label><br>
+    <input type="file" name="file" id="file" accept=".xlsx,.xls,.csv" required><br><br>
+    <button type="submit" class="dashboard-button">Upload</button>
+</form>
+
+  <!-- Template Download + Reset -->
+  <div class="action-buttons" style="margin-top: 20px;">
+<a href="{% url 'main:download_template' %}" class="btn btn-secondary">
+  📄 Download Sample Template
+</a>
+
+    <form method="post" action="{% url 'main:reset_class' %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" name="clear_names" value="true" class="btn btn-danger">
+        🔄 Reset Class
+      </button>
+    </form>
+
+  </div>
+
+  <!-- Tips -->
+  <div class="info-card">
+    <h4>Tips:</h4>
+    <ul>
+      <li>Use headers like <strong>Name</strong>, <strong>Score 1</strong>, <strong>Score 2</strong></li>
+      <li>Accepted formats: <code>.xlsx</code>, <code>.xls</code></li>
+      <li>You can download a styled sample template above to get started</li>
+    </ul>
+  </div>
+
+  <!-- Navigation -->
+  <p style="margin-top: 20px;">
+    <a href="{% url 'main:dashboard' %}">← Back to Dashboard</a> |
+    <a href="{% url 'main:logout' %}">Logout</a>
+  </p>
+</div>
+
+<!-- Reset Session Button -->
+<form method="post" action="{% url 'main:reset_class' %}">
+  {% csrf_token %}
+  <button type="submit" name="clear_names" value="true" class="btn btn-outline-danger mt-3">
+    🗑️ Start Over
+  </button>
+</form>
+
+<!-- Preview Section -->
+{% if preview_data %}
+  <hr>
+  <h3>👀 Review and Edit Uploaded Data</h3>
+  <form method="POST" action="{% url 'main:dashboard' %}">
+    {% csrf_token %}
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>Name</th><th>Score 1</th><th>Score 2</th></tr>
+        </thead>
+        <tbody>
+            {% for student in preview_data %}
+                <tr>
+                    <td>
+                        <input type="text" name="student_name_{{ forloop.counter }}" value="{{ student.Name }}">
+                    </td>
+                    <td>
+                        <input type="number" name="score1_{{ forloop.counter }}" value="{{ student.Score1 }}">
+                    </td>
+                    <td>
+                        <input type="number" name="score2_{{ forloop.counter }}" value="{{ student.Score2 }}">
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="mt-3">
+      <label for="roster_name">Roster name:</label>
+      <input type="text" name="roster_name" placeholder="e.g. Fall Benchmark" required>
+    </div>
+    
+    <button type="submit" name="save_roster_raw" value="true" class="btn btn-primary">💾 Save & Sort</button>
+  </form>
+
+{% endif %}
+
+<!-- Success Messages -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="step-success mt-2">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+{% endblock %}

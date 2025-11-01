@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Home – {% include "main/_logo.html" %}{% endblock %}
+
+{% block content %}
+
+<!-- Flash Messages -->
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<!-- Welcome Section -->
+<section>
+  <h2>Welcome to {% include "main/_logo.html" %}</h2>
+  <p>Your educator portal for dynamic Tier 2 UFLI groupings.</p>
+  <a href="{% url 'main:login' %}" class="cta-button">Login</a>
+  <a href="{% url 'main:signup' %}" class="cta-button">Sign Up</a>
+</section>
+
+<!-- Feature Highlights -->
+<section>
+  <h2>Why <span class="brand-inline">{% include "main/_logo.html" %}</span>?</h2>
+  <ul>
+    <li>Auto‑group students using UFLI scores</li>
+    <li>Upload and share custom Excel templates</li>
+    <li>Streamline Tier 2 instruction with smart tools</li>
+  </ul>
+</section>
+
+<!-- Educator Insight -->
+<section class="fact-box">
+  <strong>Did you know?</strong>
+  <span class="inline-logo">{% include "main/_logo.html" %}</span>
+  can auto‑group students by decoding UFLI scores.
+</section>
+
+<!-- Sidebar Tip -->
+<aside class="sidebar">
+  <h3>Educator Tip</h3>
+  <p>Use color‑coded tabs in your Excel templates to guide student groups.</p>
+</aside>
+
+{% endblock %}

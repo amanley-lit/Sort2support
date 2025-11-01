@@ -1,0 +1,547 @@
+function getSelectedMax(select, defaultMax = 5) {
+  if (!select || select.selectedIndex < 0) return defaultMax;
+  const opt = select.options[select.selectedIndex];
+  const raw = opt?.getAttribute("data-max");
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) ? n : defaultMax;
+}
+
+
+
+{% extends "base.html" %}
+{% load main_filters %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'main/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Welcome back, teachers!</h2>
+
+{% include "main/dashboard_instruction_box.html" %}
+
+<!-- Export Buttons -->
+<div class="action-buttons" style="margin-top: 20px;">
+  <a href="{% url 'main:download_template' %}" class="btn btn-secondary">📄 Download Blank Template</a>
+  <a href="{% url 'main:export_preview_excel' %}" class="btn btn-success">📊 Export Current Roster</a>
+
+  <form method="post" action="{% url 'main:reset_class' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" name="excel_app:clear_all_students" value="true" class="btn btn-danger">🔄 Reset Class</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+function buildTable(names = []) {
+  const container = document.getElementById("tableContainer");
+  const lesson1 = document.getElementById("lesson_1");
+  const lesson2 = document.getElementById("lesson_2");
+
+  container.innerHTML = "";
+
+  const table = document.createElement("table");
+  table.classList.add("table");
+
+  const lesson1Max = getSelectedMax(lesson1, 5);
+  const lesson2Max = getSelectedMax(lesson2, 5);
+
+  const header = table.createTHead().insertRow();
+  header.insertCell().textContent = "No.";
+  header.insertCell().textContent = "Name";
+  header.insertCell().textContent = lesson1.options[lesson1.selectedIndex].text + ` (Max: ${lesson1Max})`;
+  header.insertCell().textContent = lesson2.options[lesson2.selectedIndex].text + ` (Max: ${lesson2Max})`;
+
+  const tbody = table.createTBody();
+  names.forEach((name, i) => {
+    const row = tbody.insertRow();
+    row.insertCell().textContent = i + 1;
+
+    const nameCell = row.insertCell();
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.name = `student_name_${i + 1}`;
+    nameInput.value = name;
+    nameInput.required = true;
+    nameCell.appendChild(nameInput);
+
+    const score1Cell = row.insertCell();
+    const score1Select = document.createElement("select");
+    score1Select.name = `ufli_score_1_${i + 1}`;
+    for (let s = 0; s <= lesson1Max; s++) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      score1Select.appendChild(opt);
+    }
+    score1Cell.appendChild(score1Select);
+
+    const score2Cell = row.insertCell();
+    const score2Select = document.createElement("select");
+    score2Select.name = `ufli_score_2_${i + 1}`;
+    for (let s = 0; s <= lesson2Max; s++) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      score2Select.appendChild(opt);
+    }
+    score2Cell.appendChild(score2Select);
+  });
+
+  container.appendChild(table);
+}
+
+function updateSavedTable() {
+  buildTable(getNames());
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  toggleEntryMode();
+});
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Export -->
+<section class="dashboard-step">
+  <h3>Step 4: Export Results</h3>
+  {% if grouped %}
+    <a href="{% url 'main:export_preview_excel' %}" class="btn btn-success">
+      📊 Export Grouped Results
+    </a>
+  {% else %}
+    <p>Run Sort2Support first to unlock export.</p>
+  {% endif %}
+  
+</section>
+
+context.update({
+    "grouped_html": grouped_html,
+    "grouped_data": grouped_data,
+    "grouped": True,
+})
+
+{% extends "base.html" %}
+{% load main_filters %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'main/dashboard.css' %}">
+{% endblock %}
+
+
+
+
+  <!-- Load Saved Roster -->
+  <h3>Class Roster</h3>
+  <p>You can use a previously saved roster, upload an Excel file, or enter manually to populate your student list.</p>
+
+  <div class="roster-actions" style="margin-top: 20px;">
+    {% if has_saved_roster %}
+      <a href="{% url 'main:load_saved_roster' %}" class="btn btn-primary">📥 Load Saved Roster</a>
+    {% else %}
+      <button class="btn btn-secondary" disabled title="No saved roster yet">📋 Load Saved Roster</button>
+    {% endif %}
+
+    {% if not students %}
+      <span class="no-roster-msg">No students saved yet.</span>
+    {% endif %}
+  </div>
+
+
+  <div class="upload-section" style="margin-top: 20px;">
+    <h3>📤 Upload from Excel</h3>
+
+
+    <!-- Link to new page -->
+    <a href="{% url 'excel_app:parse_excel_upload' %}" class="btn btn-outline-primary">
+      📤 Upload from Excel
+    </a>
+
+    <!-- Hidden Upload Section -->
+    <div id="upload-section" style="display: none; margin-top: 20px;">
+      {% include "main/upload.html" %}
+    </div>
+
+    <!-- Upload instructions -->
+    <p style="font-size: 0.85rem; margin-top: 12px; color: #555;">
+      Required headings: <strong>Name</strong>, <strong>score 1</strong>, <strong>score 2</strong><br>
+      You can upload a file with student names and scores, and we’ll merge it with your saved roster. Missing scores will be highlighted, and your students will be remembered for next time.
+    </p>
+  </div>
+
+  {% if preview_data %}
+    <hr>
+    <h3>👀 Preview Uploaded Data</h3>
+    <p class="info-box">📥 Previewing uploaded students. Click “Save” to finalize.</p>
+    <p>Preview data loaded: {{ preview_data|length }} students</p>
+    <pre>{{ preview_data }}</pre>
+
+
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>score 1</th>
+          <th>score 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in preview_data %}
+          <pre>{{ student }}</pre>
+          <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.score_1|default:"—" }}</td>
+            <td>{{ student.score_2|default:"—" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <form method="POST" action="{% url 'excel_app:save_student_scores' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success mt-3">✅ Save and Return to Dashboard</button>
+    </form>
+  {% else %}
+    <p class="info-box">✅ Showing saved students from your last session.</p>
+  {% endif %}
+  {% if source == "session" %}
+    <p class="info-box">📥 Previewing uploaded students. Click “Save” to finalize.</p>
+  {% endif %}
+
+  {% if students %}
+    <hr>
+    <h3>📋 Saved Students</h3>
+      <form method="POST" action="{% url 'main:update_scores' %}">
+        {% csrf_token %}
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th id="lesson1Header">Concept 1</th>
+              <th id="lesson2Header">Concept 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+              <tr>
+                <td>{{ student.name }}</td>
+                <td>
+                  <input type="text" name="score_1_{{ student.id }}" value="{{ student.ufli_score_1|default:'' }}" class="form-control">
+                </td>
+                <td>
+                  <input type="text" name="score_2_{{ student.id }}" value="{{ student.ufli_score_2|default:'' }}" class="form-control">
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      <!-- ✅ Save Scores Button -->
+      <button type="submit" class="btn btn-primary mt-3">💾 Save Scores</button>
+      </form>
+
+      <!-- ✅ Sort2Support Button: branded, dynamic, and joyful -->
+      <form method="POST" action="{% url 'main:sort2support' %}">
+        {% csrf_token %}
+        <button type="submit"
+                class="btn sort2support-btn mt-4"
+                {% if not students|any_scores %}disabled title="Add scores to enable grouping"{% endif %}>
+        🚀 Sort2Support
+        </button>
+      </form>
+    {% endif %}
+
+  {% if not students %}
+    <p>No students saved yet. You can upload from Excel or enter manually below.</p>
+  {% endif %}
+
+  <!-- Student data manual entry -->  
+  <h3>✍️ Add Students Manually</h3>
+  <form method="POST" action="{% url 'excel_app:save_student_scores' %}">
+    {% csrf_token %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>score 1</th>
+          <th>score 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in "12345" %}
+          <tr>
+            <td><input type="text" name="name_{{ i }}" class="form-control" placeholder="Student name"></td>
+            <td><input type="number" name="ufli_score_1_{{ i }}" class="form-control" min="0" max="10"></td>
+            <td><input type="number" name="ufli_score_2_{{ i }}" class="form-control" min="0" max="10"></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <input type="hidden" name="total_rows" value="5">
+    <button type="submit" class="btn btn-primary">✅ Save Manual Entries</button>
+  </form>
+    
+
+<!-- Lesson selects -->
+<div class="lesson-selects" style="margin-top: 20px;">
+  <label for="lesson_1">Select Concept 1:</label>
+  <select id="lesson_1" onchange="updateSavedTable(); buildTable(getNames());">
+    {% for lesson in ufli_lessons %}
+      <option value="{{ lesson.id }}" data-max="{{ lesson.total_points }}">
+        Lesson {{ lesson.number }}: {{ lesson.concept }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label for="lesson_2" style="margin-left: 20px;">Select Concept 2:</label>
+  <select id="lesson_2" onchange="updateSavedTable(); buildTable(getNames());">
+    {% for lesson in ufli_lessons %}
+      <option value="{{ lesson.id }}" data-max="{{ lesson.total_points }}">
+        Lesson {{ lesson.number }}: {{ lesson.concept }}
+      </option>
+    {% endfor %}
+  </select>
+</div>
+
+<label for="entryMode">Choose entry mode:</label>
+<select id="entryMode" onchange="toggleEntryMode()" class="form-select" style="width: 200px;">
+  <option value="paste">Paste Names</option>
+  <option value="upload">Upload from Excel</option>
+</select>
+
+
+<!-- Manual Entry Block -->
+<div id="manualBlock" style="margin-top: 20px;">
+  <h3>Paste Student Names</h3>
+  <textarea id="pasteArea" rows="6" cols="50" placeholder="Paste names here, one per line..."></textarea>
+</div>
+
+<!-- Preview Table Container -->
+<div id="tableContainer" style="margin-top: 20px;"></div>
+
+<!-- Export Buttons -->
+<div class="action-buttons" style="margin-top: 20px;">
+  <a href="{% url 'main:download_template' %}" class="btn btn-secondary">📄 Download Blank Template</a>
+  <a href="{% url 'main:export_preview_excel' %}" class="btn btn-success">📊 Export Current Roster</a>
+
+  {% if grouped_html %}
+    <a href="{% url 'main:export_grouped_excel' %}" class="btn btn-success">📊 Export Grouped Results</a>
+  {% endif %}
+
+  <form method="post" action="{% url 'main:reset_class' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" name="excel_app:clear_all_students" value="true" class="btn btn-danger">🔄 Reset Class</button>
+  </form>
+</div>
+
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("show-upload");
+    const uploadSection = document.getElementById("upload-section");
+
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = uploadSection.style.display === "none";
+      uploadSection.style.display = isHidden ? "block" : "none";
+      toggleBtn.textContent = isHidden
+        ? "🔽 Hide Upload Section"
+        : "📤 Upload from Excel";
+    });
+  });
+
+    function updateSavedTable() {
+    const lesson1 = document.getElementById("lesson_1");
+    const lesson2 = document.getElementById("lesson_2");
+
+    const lesson1Max = getSelectedMax(lesson1, 5);
+    const lesson2Max = getSelectedMax(lesson2, 5);
+
+    const header1 = document.getElementById("lesson1Header");
+    const header2 = document.getElementById("lesson2Header");
+
+    if (header1) {
+      header1.textContent = lesson1.value
+        ? lesson1.options[lesson1.selectedIndex].text + ` (Max: ${lesson1Max})`
+        : "Concept 1";
+    }
+
+    if (header2) {
+      header2.textContent = lesson2.value
+        ? lesson2.options[lesson2.selectedIndex].text + ` (Max: ${lesson2Max})`
+        : "Concept 2";
+    }
+  function toggleEntryMode() {
+  const mode = document.getElementById("entryMode").value;
+  document.getElementById("manualBlock").style.display = mode === "paste" ? "block" : "none";
+  document.getElementById("upload-section").style.display = mode === "upload" ? "block" : "none";
+  updateSavedTable();
+  }
+}
+</script>
+
+
+
+<!-- Sort2Support -->
+<section class="dashboard-step">
+  <h3>Step 3: Run Grouping</h3>
+  {% if students %}
+{# <form method="post" action="{% url 'excel_app:assign_group' %}"> #}
+{#   {% csrf_token %} #}
+{#   <button type="submit" class="btn sort2support-btn">🚀 Sort2Support</button> #}
+{# </form> #}
+
+  {% else %}
+    <p>Load and save a roster first.</p>
+  {% endif %}
+</section>
+
+<hr>
+<form method="post" action="{% url 'main:sort2support' %}">
+
+
+  {% csrf_token %}
+  <button type="submit" class="btn sort2support-btn">🚀 Sort2Support</button>
+</form>
+
+<script>
+function getSelectedMax(select, defaultMax = 5) {
+  if (!select || select.selectedIndex < 0) return defaultMax;
+  const opt = select.options[select.selectedIndex];
+  const raw = opt?.getAttribute("data-max");
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) ? n : defaultMax;
+}
+
+function buildTable(names = []) {
+  const container = document.getElementById("tableContainer");
+  const lesson1 = document.getElementById("lesson_1");
+  const lesson2 = document.getElementById("lesson_2");
+
+  container.innerHTML = "";
+
+  const table = document.createElement("table");
+  table.classList.add("table");
+
+  const lesson1Max = getSelectedMax(lesson1, 5);
+  const lesson2Max = getSelectedMax(lesson2, 5);
+
+  const header = table.createTHead().insertRow();
+  header.insertCell().textContent = "No.";
+  header.insertCell().textContent = "Name";
+  header.insertCell().textContent = lesson1.options[lesson1.selectedIndex].text + ` (Max: ${lesson1Max})`;
+  header.insertCell().textContent = lesson2.options[lesson2.selectedIndex].text + ` (Max: ${lesson2Max})`;
+
+  const tbody = table.createTBody();
+  names.forEach((name, i) => {
+    const row = tbody.insertRow();
+    row.insertCell().textContent = i + 1;
+
+    const nameCell = row.insertCell();
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.name = `student_name_${i + 1}`;
+    nameInput.value = name;
+    nameInput.required = true;
+    nameCell.appendChild(nameInput);
+
+    const score1Cell = row.insertCell();
+    const score1Select = document.createElement("select");
+    score1Select.name = `ufli_score_1_${i + 1}`;
+    for (let s = 0; s <= lesson1Max; s++) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      score1Select.appendChild(opt);
+    }
+    score1Cell.appendChild(score1Select);
+
+    const score2Cell = row.insertCell();
+    const score2Select = document.createElement("select");
+    score2Select.name = `ufli_score_2_${i + 1}`;
+    for (let s = 0; s <= lesson2Max; s++) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      score2Select.appendChild(opt);
+    }
+    score2Cell.appendChild(score2Select);
+  });
+
+  container.appendChild(table);
+}
+
+function getNames() {
+  const rawInput = document.getElementById("pasteArea")?.value || "";
+  return rawInput.split("\n").map(line => line.trim()).filter(n => n);
+}
+
+function updateSavedTable() {
+  buildTable(getNames());
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  updateSavedTable();
+});
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>🚀 Sort2Support</h2>
+
+<form method="POST" action="{% url 'main:sort2support' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+
+{% if preview_mode and student_data %}
+  <hr>
+  <h3>👀 Review Uploaded Data</h3>
+  <table class="table table-bordered">
+    <thead>
+      <tr><th>Name</th><th>Score 1</th><th>Score 2</th></tr>
+    </thead>
+    <tbody>
+      {% for student in student_data %}
+        <tr>
+          <td>{{ student.name }}</td>
+          <td>{{ student.score1|default:"—" }}</td>
+          <td>{{ student.score2|default:"—" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <form method="POST" action="{% url 'main:sort2support' %}">
+    {% csrf_token %}
+    <input type="hidden" name="save_and_sort" value="true">
+    <button type="submit" class="btn btn-primary mt-3">
+      🚀 {% include "main/_logo.html" %}
+    </button>
+  </form>
+{% endif %}
+
+<!-- Grouped Output 
+{# Export temporarily disabled
+{% if grouped_html %}
+  <form method="POST" action="{% url 'main:export_students_excel' %}" style="margin-top: 20px;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success" disabled>📊 Export to Excel</button>
+  </form>
+{% endif %}
+#}-->
+
+
+<!-- Debug: Raw Grouped Data -->
+{% if grouped_data %}
+  <h3>Debug: Grouped Data</h3>
+  <pre>{{ grouped_data|safe }}</pre>
+{% endif %}
+
+{% if grouped_html %}
+  <h3>📊 Grouping Results</h3>
+  <div class="grouping-preview">
+    {{ grouped_html|safe }}
+  </div>
+
+  <form method="GET" action="{% url 'main:export_grouped_excel' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success mt-3">📊 Export Grouped Results</button>
+  </form>
+
+  <form method="POST" action="{% url 'main:dashboard' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary mt-3">🔙 Return to Dashboard</button>
+  </form>
+{% else %}
+  <p>No grouping data available.</p>
+{% endif %}
+
+<!-- JavaScript -->
+<script>
+
+
+function getNames() {
+  const mode = document.getElementById("entryMode")?.value;
+  if (mode === "manual") {
+    const rawInput = document.getElementById("pasteArea").value.trim();
+    return rawInput.split("\n").map(line => line.split("\t")[0].trim()).filter(n => n);
+  }
+  return [];
+}
+
+function buildTable(names, parsedData = []) {
+  const container = document.getElementById("tableContainer");
+  const lesson1 = document.getElementById("lesson_1");
+  const lesson2 = document.getElementById("lesson_2");
+
+  container.innerHTML = "";
+
+  const table = document.createElement("table");
+  table.classList.add("table");
+
+  const lesson1Max = getSelectedMax(lesson1, 5);
+  const lesson2Max = getSelectedMax(lesson2, 5);
+
+  const header = table.createTHead().insertRow();
+  header.insertCell().textContent = "No.";
+  header.insertCell().textContent = "Name";
+  header.insertCell().textContent = "Concept 1 (Max: " + lesson1Max + ")";
+  header.insertCell().textContent = "Concept 2 (Max: " + lesson2Max + ")";
+
+  const tbody = table.createTBody();
+
+  names.forEach((name, i) => {
+    const row = tbody.insertRow();
+    row.insertCell().textContent = i + 1;
+
+    const nameCell = row.insertCell();
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.name = `student_name_${i + 1}`;
+    nameInput.value = parsedData[i]?.name || name;
+    nameInput.required = true;
+    nameCell.appendChild(nameInput);
+
+    const score1Cell = row.insertCell();
+    const score1Select = document.createElement("select");
+    score1Select.name = `ufli_score_1_${i + 1}`;
+    for (let s = 0; s <= lesson1Max; s++) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      score1Select.appendChild(opt);
+    }
+    score1Cell.appendChild(score1Select);
+
+    const score2Cell = row.insertCell();
+    const score2Select = document.createElement("select");
+    score2Select.name = `ufli_score_2_${i + 1}`;
+    for (let s = 0; s <= lesson2Max; s++) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      score2Select.appendChild(opt);
+    }
+    score2Cell.appendChild(score2Select);
+  });
+
+  container.appendChild(table);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  toggleEntryMode();
+});
+</script>
+
+{% endblock %}

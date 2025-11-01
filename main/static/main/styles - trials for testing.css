@@ -1,0 +1,662 @@
+/* ===========================
+   Brand Color Variables
+   =========================== */
+:root {
+  --brand-primary: #2A9D8F;   /* Teal Blue */
+  --brand-accent:  #E76F51;   /* Coral Red */
+  --brand-warm:    #F4A261;   /* Golden Yellow */
+  --brand-pop:     #48CAE4;   /* Sky Blue */
+  --brand-dark:    #264653;   /* Charcoal */
+  --brand-light:   #FAFAFA;   /* Off-white background */
+  --brand-text-light: #ffffff;
+}
+
+/* ===========================
+   Logo trials below 
+   =========================== */
+.logo {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2E7D32; /* or your original green */
+}
+
+.logo-highlight {
+  color: #FBC02D; /* or your original yellow */
+  font-weight: 700;
+}
+/* ===========================
+   Logo trials above
+   =========================== */
+
+
+/* ===========================
+   Logo
+   =========================== */
+
+/* .logo {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.logo-highlight {
+  color: #4CAF50; /* same green as your buttons */
+}*/
+/* ===========================
+   BUTTON STYLE TRIALS
+   =========================== */
+.button-modern {
+  background: linear-gradient(to right, #1565C0, #26C6DA);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.button-warm {
+  background: linear-gradient(to top, #2E7D32, #66BB6A);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.button-warm:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(46, 125, 50, 0.3);
+}
+.button-modern:hover {
+  background: linear-gradient(to right, #0D47A1, #00ACC1);
+  transform: translateY(-2px);
+}
+
+
+/* ===========================
+   dashboard BUTTON STYLE TRIALS
+   =========================== */
+.dashboard-button {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-button:hover {
+  transform: scale(1.05);
+}
+
+
+/* ===========================
+   Dashboard tool bar
+   =========================== */   
+/*.dashboard-toolbar {
+  margin-bottom: 20px;
+}
+
+
+.dashboard-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 16px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease;
+}
+
+.dashboard-button:hover {
+  background-color: #45a049;
+}*/ 
+
+.dashboard-button.danger {
+  background-color: #d9534f;
+}
+
+.dashboard-button.danger:hover {
+  background-color: #c9302c;
+}
+.upload-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.info-card {
+  background-color: #eef6ff;
+  border: 1px solid #cce5ff;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 20px;
+}
+
+.info-card h4 {
+  margin-top: 0;
+  color: #004085;
+}
+.info-card h3 {
+  margin-top: 0;
+  color: #004085;
+}
+
+/* ===========================
+   Global Base
+   =========================== */
+/*body {
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  background-color: var(--brand-light);
+  color: var(--brand-dark);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}*/
+/* ===========================
+   trial fonts and colors below
+   =========================== */
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--brand-light);
+  color: var(--brand-dark);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+/* ===========================
+   trial fonts and colors above
+   =========================== */
+
+'Nunito', sans-serif
+.preview-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.preview-table th,
+.preview-table td {
+  border: 1px solid #333;   /* dark outline */
+  padding: 8px;
+  text-align: left;
+}
+
+.preview-table th {
+  background-color: #e0f7fa; /* light robin’s egg blue header */
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.excel-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: 0.95rem;
+  table-layout: fixed; /* keeps columns aligned */
+}
+
+.excel-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: normal;   /* allow wrapping */
+  word-wrap: break-word; /* break long words if needed */
+  text-align: center;    /* optional: center text */
+  padding: 6px 8px;
+}
+
+.excel-table td {
+  border: 1px solid #ccc; /* light gridlines */
+  padding: 6px 10px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.excel-table th {
+  background-color: #f2f2f2; /* light gray header */
+  font-weight: bold;
+  position: sticky; /* header stays visible */
+  top: 0;
+  z-index: 2;
+}
+
+.excel-table tr:nth-child(even) td {
+  background-color: #fafafa; /* alternating row shading */
+}
+
+.excel-table tr:hover td {
+  background-color: #e6f7ff; /* highlight row on hover */
+}
+
+/* ===========================
+   Branding Wordmark
+   =========================== */
+.brand-name {
+  display: inline-flex;       /* keeps spans tight, no gaps */
+  align-items: baseline;      /* aligns text nicely */
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.brand-name .sort {
+  color: var(--brand-primary);
+  font-size: 2rem;
+}
+
+.brand-name .two {
+  color: var(--brand-accent);
+  font-size: 2.6rem;          /* larger than the rest */
+  line-height: 1;
+  margin: 0 0.1rem;           /* tiny breathing room */
+}
+
+.brand-name .support {
+  color: var(--brand-dark);
+  font-size: 2rem;
+}
+
+.brand-name span {
+  font-size: 2.2rem; /* restore font size for children */
+  display: inline-block;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  margin: 0.3em 0;
+  color: #555;
+}
+.brand-inline {
+  color: var(--brand-accent);
+  font-style: italic;
+}
+
+/* ===========================
+   Header & Nav
+   =========================== */
+.site-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+  border-bottom: 3px solid var(--brand-primary);
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.nav-links a {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--brand-dark);
+  transition: color 0.3s ease;
+}
+.nav-links a:hover {
+  color: var(--brand-accent);
+}
+
+/* Active nav link highlight */
+.nav-links a.active {
+  color: var(--brand-accent);
+  border-bottom: 2px solid var(--brand-accent);
+}
+
+/* ===========================
+   Buttons
+   =========================== */
+.cta-button, .cta, .button, .btn-primary {
+  background-color: var(--brand-primary);
+  color: var(--brand-text-light);
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 12px 24px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.cta-button:hover, .cta:hover, .button:hover, .btn-primary:hover {
+  background-color: var(--brand-accent);
+  transform: scale(1.03);
+}
+
+/* ===========================
+   Cards
+   =========================== */
+.card {
+  background-color: var(--brand-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.card h3 { margin-top: 0; color: var(--brand-primary); }
+
+/* ===========================
+   Weekly Group Table
+   =========================== */
+.weekly-group-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+}
+.weekly-group-table th, .weekly-group-table td {
+  border: 2px solid #444;
+  padding: 8px 10px;
+  text-align: center;
+}
+.weekly-group-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+.weekly-group-table tr:nth-child(even) td {
+  background-color: #fafafa;
+}
+.weekly-group-table tr td:first-child {
+  font-weight: bold;
+  text-align: left;
+}
+.weekly-group-table tr td:first-child::before {
+  content: "📌 ";
+}
+
+/* Fun row highlights */
+.weekly-group-table tr:nth-child(2) { background-color: #ffd6e7; } /* Intensive */
+.weekly-group-table tr:nth-child(3) { background-color: #fff3b0; } /* Reteach */
+.weekly-group-table tr:nth-child(4) { background-color: #d6f0ff; } /* Review */
+.weekly-group-table tr:nth-child(5) { background-color: #d6ffd6; } /* None */
+
+/* ===========================
+   Flash Messages
+   =========================== */
+.messages { max-width: 800px; margin: 1rem auto; padding: 0 1rem; }
+.alert { padding: 10px 15px; border-radius: 4px; margin-bottom: 10px; font-weight: bold; }
+.alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-error, .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+.alert-info { background-color: #d9f0ff; color: #084c61; border: 1px solid #b6e0fe; }
+
+/* ===========================
+   Footer
+   =========================== */
+footer {
+  background-color: var(--brand-dark);
+  color: var(--brand-text-light);
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9em;
+}
+
+/* ===========================
+   Animation for "faster!"
+   =========================== */
+.faster {
+  display: inline-block;
+  font-weight: bold;
+  color: var(--brand-accent);
+  opacity: 0;
+  transform: translateX(-50px) skewX(-20deg);
+  animation: fadeIn 1.5s ease forwards; /* forwards keeps it visible */
+  position: relative;
+}
+@keyframes speedIn {
+  0% { opacity: 0; transform: translateX(-50px) skewX(-20deg); }
+  60% { opacity: 1; transform: translateX(10px) skewX(10deg); }
+  80% { transform: translateX(-5px) skewX(-5deg); }
+  100% { transform: translateX(0) skewX(0); }
+}
+.faster::before {
+  content: "faster!";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: rgba(230,57,70,0.3);
+  transform: translateX(-10px);
+  filter: blur(2px);
+  opacity: 0;
+  animation: trail 0.8s ease-out forwards;
+}
+@keyframes trail {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===========================
+   Layout/spacing
+   =========================== */
+section, .fact-box, .card, .sidebar {
+  margin-top: 2rem;
+}
+/* ===========================
+   Snack Group Icons
+   =========================== */
+.snack-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+/* ===========================
+   Snack Group Legend
+   =========================== */
+
+.snack-legend {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.snack-legend li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.snack-legend img.snack-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+/* === Collapsible sections === */
+.collapsible-toggle {
+  background: #f5f5f5;
+  border: none;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.collapsible-toggle:hover {
+  background: #e0e0e0;
+}
+
+.collapsible-content {
+  display: none;
+  padding: 10px 15px;
+  border-left: 3px solid #ccc;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.collapsible-content.open {
+  display: block;
+}
+
+/* === Results layout === */
+.results-layout {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.results-layout .main-results {
+  flex: 2;
+}
+
+.results-layout .side-keys {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* === Reference table === */
+.reference-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.reference-table th,
+.reference-table td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.reference-table th {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+
+.reference-table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* === Snack legend icons === */
+.snack-legend {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.snack-legend li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.snack-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* ===========================
+   Snack Table Preview
+   =========================== */
+
+/* ===========================
+   Snack Toggle Buttons
+   =========================== */
+/* ===========================
+   Results Layout (Tables + Keys)
+   =========================== */
+.results-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+.main-results {
+  flex: 3; /* wider column for regrouped tables */
+}
+
+.side-keys {
+  flex: 1; /* narrower sidebar for keys */
+  position: sticky;
+  top: 1rem; /* stays visible while scrolling */
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--brand-light);
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.side-keys h3, .side-keys h4 {
+  margin-top: 0.5rem;
+  color: var(--brand-primary);
+}
+
+.collapsible-toggle {
+  background: var(--brand-primary);
+  color: var(--brand-text-light);
+  border: none;
+  padding: 6px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.collapsible-toggle:hover {
+  background: var(--brand-accent);
+}
+
+.collapsible-content {
+  display: none;
+  margin-bottom: 1rem;
+}
+
+.collapsible-content.open {
+  display: block;
+}
+.error-row {
+  background-color: #ffe0e0;
+  color: #b00000;
+  font-weight: bold;
+}
+.dashboard-button {
+  background-color: #4CAF50;   /* a friendly green */
+  color: white;
+  padding: 10px 18px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease;
+}
+
+.dashboard-button:hover {
+  background-color: #45a049;   /* slightly darker on hover */
+}

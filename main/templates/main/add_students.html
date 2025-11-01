@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Add Student</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name">Name:</label>
+      <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="score1">Score 1:</label>
+      <input type="text" name="score1" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="score2">Score 2:</label>
+      <input type="text" name="score2" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success">Add Student</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="login-container">
+  <h2 class="login-heading">
+    🔐 Login to <span class="inline-logo">{% include "main/_logo.html" %}</span>
+  </h2>
+
+
+  <p class="subtitle">Access your educator dashboard and tools</p>
+
+  {% if form.errors %}
+    <div class="error-message">
+      <strong>Oops!</strong> Please check your email and password.
+    </div>
+  {% endif %}
+
+<form method="POST" action="{% url 'main:login' %}">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="id_username">Email</label>
+    <input type="text" name="username" id="id_username"
+           value="{{ form.username.value|default:'' }}"
+           placeholder="you@example.com" required autofocus>
+    {{ form.username.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="id_password">Password</label>
+    <input type="password" name="password" id="id_password"
+           placeholder="••••••••" required>
+    {{ form.password.errors }}
+  </div>
+
+  <button type="submit" class="btn-primary">Login</button>
+</form>
+
+  <p class="signup-link">
+    Don't have an account? <a href="{% url 'main:signup' %}">Sign up here</a>
+  </p>
+</div>
+{% endblock %}

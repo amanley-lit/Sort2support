@@ -1,0 +1,438 @@
+
+# -------- Excel helpers ----------
+def safe_sheet_name(name: str) -> str:
+    cleaned = re.sub(r'[:\\/*?\[\]]', '-', name).strip()
+    return cleaned[:31]
+
+def autofit_columns(ws):
+    for i, col in enumerate(ws.columns, 1):
+        max_length = 0
+        col_letter = get_column_letter(i)
+        for cell in col:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[col_letter].width = max_length + 2
+
+def apply_banded_rows(ws, start_row: int = 2):
+    fill = PatternFill(start_color="DDDDDD", end_color="DDDDDD", fill_type="solid")
+    for row in ws.iter_rows(min_row=start_row, max_row=ws.max_row):
+        if row[0].row % 2 == 0:
+            for cell in row:
+                cell.fill = fill
+
+def style_header_row(row):
+        header_font = Font(bold=True, color="000000")  # You can customize color, size, etc.
+        header_fill = PatternFill(start_color="F0F8FF", end_color="F0F8FF", fill_type="solid")  # Soft blue
+        header_align = Alignment(horizontal="center", vertical="center")
+
+        for cell in row:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_align
+
+
+def build_grouped_workbook(grouped_data):
+    """
+    Build an Excel workbook from the grouped_data dict returned by assign_group.
+    grouped_data looks like:
+      {
+        "concept1": {"Red": [(name, score), ...], "Yellow": [...], ...},
+        "concept2": {...},
+        "tags": [...]
+      }
+    """
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Groups"
+
+    # Header row
+    ws.append(["Concept", "Color Group", "Student", "Score"])
+
+    # Loop through both concept groupings
+    for concept_key in ["concept1", "concept2"]:
+        groups = grouped_data.get(concept_key, {})
+        for color, students in groups.items():
+            for name, score in students:
+                ws.append([concept_key, color, name, score])
+
+    # Apply some polish using your existing helpers
+    style_header_row(ws, row_num=1)
+    autofit_columns(ws)
+    apply_banded_rows(ws, start_row=2)
+    add_group_color_highlighting(ws, start_row=2, last_col="D", group_col="B")
+
+    return wb
+def build_class_template():
+    """
+    Create a blank Excel template for teachers to fill in student names and scores.
+    """
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Class Template"
+
+    # Header row
+    ws.append(["Name", "Score 1", "Score 2"])
+
+    # Add some empty rows as placeholders
+    for _ in range(20):
+        ws.append(["", "", ""])
+
+    # Apply your existing styling helpers
+    style_header_row(ws, row_num=1)
+    autofit_columns(ws)
+
+    return wb
+
+def build_students_workbook(students):
+    """
+    Build an Excel workbook of all students with their scores.
+    """
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Students"
+
+    # Header row
+    ws.append(["Name", "Score 1", "Score 2"])
+
+    # Add each student
+    for s in students:
+        ws.append([s.name, s.ufli_score_1, s.ufli_score_2])
+
+    # Apply your existing styling helpers
+    style_header_row(ws, row_num=1)
+    autofit_columns(ws)
+    apply_banded_rows(ws, start_row=2)
+
+    return wb
+# ---------- Grouping Logic ----------
+def assign_group(student_data, lesson_1, lesson_2):
+    # Helpers
+    def get_color(score, max_points):
+        if score is None or max_points == 0:
+            return None
+        percent = (score / max_points) * 100
+        if percent <= 25: return "Red"
+        elif 26 <= percent <= 60: return "Yellow"
+        elif 61 <= percent <= 99: return "Green"
+        elif percent == 100: return "Blue"
+        return None
+
+    def get_instruction_group(score, max_points):
+        if score is None: return "Missing"
+        if max_points == 3:
+            return "Intensive Reteach" if score <= 1 else "Review" if score == 2 else "None"
+        elif max_points == 4:
+            return "Intensive Reteach" if score <= 1 else "Reteach" if score == 2 else "Review" if score == 3 else "None"
+        elif max_points == 5:
+            return "Intensive Reteach" if score <= 1 else "Reteach" if score in [2,3] else "Review" if score == 4 else "None"
+        elif max_points == 6:
+            return "Intensive Reteach" if score <= 1 else "Reteach" if score in [2,3] else "Review" if score in [4,5] else "None"
+        return "Unclassified"
+
+    def build_table(groups, concept_name, max_points, missing):
+        html = f"<h4>{concept_name} (Max: {max_points})</h4>"
+        html += "<table class='assessment-table'><tr><th>Group</th><th>Name</th><th>Score</th></tr>"
+        for color in ["Red","Yellow","Green","Blue"]:
+            css_class = color.lower() + "-group"
+            for name, score in groups[color]:
+                html += f"<tr class='{css_class}'><td>{color}</td><td>{name}</td><td>{score}</td></tr>"
+        html += "</table>"
+        if missing:
+            html += f"<p class='note'><em>Not assessed / absent: {', '.join(missing)}</em></p>"
+        return html
+
+    def build_weekly_group_table(student_tags, score_key, concept_name, max_points):
+        schedule_map = {
+            "Intensive Reteach": ["M","Tu","W","Th","F"],
+            "Reteach": ["M","W","F"],
+            "Review": ["Tu","Th"],
+            "None": [],
+            "Missing": [],
+            "Unclassified": []
+        }
+        day_order = ["M","Tu","W","Th","F"]
+        day_labels = {"M":"M 📘","Tu":"Tu ✏️","W":"W 📚","Th":"Th 🎨","F":"F 🎉"}
+        categories = {
+            "Intensive Reteach": "🚨 Extra Boost Crew",
+            "Reteach": "🔄 Reteach Squad",
+            "Review": "🔍 Quick Checkers",
+            "None": "🌟 Ready to Fly"
+        }
+        table_data = {cat:{day:[] for day in day_order} for cat in categories}
+
+        for tag in student_tags:
+            group = get_instruction_group(tag[score_key], max_points)
+            if group in table_data:
+                for day in schedule_map.get(group, []):
+                    table_data[group][day].append(tag["name"])
+
+        # Build HTML
+        html = f"<h4>{concept_name} – Weekly Groups (Max: {max_points})</h4>"
+        html += "<table class='assessment-table'><tr><th>Category</th>"
+        for day in day_order:
+            html += f"<th>{day_labels[day]}</th>"
+        html += "</tr>"
+
+        for cat, label in categories.items():
+            html += f"<tr><td>{label}</td>"
+            for day in day_order:
+                names = ", ".join(table_data[cat][day]) if table_data[cat][day] else "-"
+                html += f"<td>{names}</td>"
+            html += "</tr>"
+
+        html += "</table>"
+        return html
+
+
+    def build_daily_group_table(student_tags, concept1_name, concept2_name):
+        html = "<h4>Daily Grouping Summary</h4>"
+        html += "<table class='daily-summary'><tr><th>Name</th>"
+        html += f"<th>{concept1_name}</th><th>{concept2_name}</th></tr>"
+        for tag in student_tags:
+            html += f"<tr><td>{tag['name']}</td>"
+            html += f"<td>{tag['concept_1_group']} ({tag['score1']})</td>"
+            html += f"<td>{tag['concept_2_group']} ({tag['score2']})</td></tr>"
+        html += "</table>"
+        return html
+
+    # ---------- Main logic ----------
+    max1 = lesson_1["total_points"] if lesson_1 else 5
+    max2 = lesson_2["total_points"] if lesson_2 else 5
+    concept1_name = lesson_1["concept"] if lesson_1 else "Concept 1"
+    concept2_name = lesson_2["concept"] if lesson_2 else "Concept 2"
+
+    concept1_groups = {"Red":[],"Yellow":[],"Green":[],"Blue":[]}
+    concept2_groups = {"Red":[],"Yellow":[],"Green":[],"Blue":[]}
+    missing1, missing2, student_tags = [], [], []
+
+    for student in student_data:
+        name, score1, score2 = student["name"], student["score1"], student["score2"]
+
+        group1 = get_color(score1, max1) or "Missing"
+        group2 = get_color(score2, max2) or "Missing"
+
+        student_tags.append({
+            "name": name,
+            "concept_1_group": group1,
+            "concept_2_group": group2,
+            "score1": score1,
+            "score2": score2,
+           
+        })
+        
+
+        student_tags.append({
+            "name": name,
+            "concept_1_group": group1,
+            "concept_2_group": group2,
+            "score1": score1,
+            "score2": score2,      
+        })
+        if group1: concept1_groups[group1].append((name,score1))
+        else: missing1.append(name)
+        if group2: concept2_groups[group2].append((name,score2))
+        else: missing2.append(name)
+
+    # ---------- Build HTML ----------
+    html = "<div class='grouping-tables'>"
+    html += build_table(concept1_groups, concept1_name, max1, missing1)
+    html += build_table(concept2_groups, concept2_name, max2, missing2)
+    html += build_daily_group_table(student_tags, concept1_name, concept2_name)
+    html += "<hr><h3>Weekly Grouping Tables</h3>"
+    html += build_weekly_group_table(student_tags, "score1", concept1_name, max1)
+    html += build_weekly_group_table(student_tags, "score2", concept2_name, max2)
+    html += "</div>"
+
+    return html
+@login_required
+def export_students_excel(request):
+    grouped_data = request.session.get("grouped_data", [])
+
+    concept1 = grouped_data[0] if len(grouped_data) > 0 else None
+    concept2 = grouped_data[1] if len(grouped_data) > 1 else None
+
+    wb = Workbook()
+    ws_overview = wb.active
+    ws_overview.title = "Overview"
+
+    # --- Concept 1 table ---
+    current_row = 1
+    if concept1:
+        ws_overview.append(["Concept 1", "Group", "Name", "Score"])
+        style_header_row(ws_overview, row_num=current_row)
+        current_row += 1
+
+        for group in concept1["groups"]:
+            for s in group["students"]:
+                ws_overview.append([
+                    "Concept 1",
+                    group["group_name"],
+                    s["name"],
+                    s.get("score", "")
+                ])
+                current_row += 1
+            ws_overview.append([])
+            current_row += 1
+
+        ws_overview.append([])
+        current_row += 1
+
+    # --- Concept 2 table ---
+    if concept2:
+        ws_overview.append(["Concept 2", "Group", "Name", "Score"])
+        style_header_row(ws_overview, row_num=current_row)
+        current_row += 1
+
+        for group in concept2["groups"]:
+            for s in group["students"]:
+                ws_overview.append([
+                    "Concept 2",
+                    group["group_name"],
+                    s["name"],
+                    s.get("score", "")
+                ])
+                current_row += 1
+            ws_overview.append([])
+            current_row += 1
+
+    # Autofit and highlighting
+    autofit_columns(ws_overview)
+    add_group_color_highlighting(
+        ws_overview,
+        start_row=2,   # safe if Concept 1 exists
+        last_col="D",
+        group_col="B"
+    )
+
+    # --- One sheet per concept ---
+    for concept in grouped_data:
+        sheet_name = safe_sheet_name(concept["concept_name"])
+        ws = wb.create_sheet(title=sheet_name)
+
+        ws.merge_cells("A1:C1")
+        ws["A1"] = concept["concept_name"]
+
+        ws.append(["Group", "Name", "Score"])
+        style_header_row(ws, row_num=2)
+
+        for group in concept["groups"]:
+            for s in group["students"]:
+                ws.append([
+                    group["group_name"],
+                    s["name"],
+                    s.get("score", ""),
+                ])
+            ws.append([])
+
+        autofit_columns(ws)
+        add_group_color_highlighting(
+            ws,
+            start_row=3,
+            last_col="C",
+            group_col="A"
+        )
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="groups.xlsx"'
+    wb.save(response)
+    return response
+def add_group_color_highlighting(ws, start_row=2, last_col="E", group_col="B"):
+    """
+    Highlight entire rows based on whether the group label in group_col
+    contains 'Red', 'Yellow', 'Green', or 'Blue'.
+    The range automatically extends to ws.max_row.
+    """
+
+    end_row = ws.max_row  # dynamically detect last row with data
+
+    colors = {
+        "Red":    "F4CCCC",  # light red
+        "Yellow": "FFF2CC",  # light yellow
+        "Green":  "D9EAD3",  # light green
+        "Blue":   "CFE2F3",  # light blue
+    }
+
+    for keyword, hex_color in colors.items():
+        fill = PatternFill(start_color=hex_color, end_color=hex_color, fill_type="solid")
+        # Formula: look for the keyword anywhere in the group label column
+        formula = f'ISNUMBER(SEARCH("{keyword}",${group_col}{start_row}))'
+        ws.conditional_formatting.add(
+            f"A{start_row}:{last_col}{end_row}",
+            FormulaRule(formula=[formula], fill=fill)
+        )
+
+
+
+def safe_sheet_name(name: str) -> str:
+    """Make a string safe for Excel sheet names (<=31 chars, no forbidden chars)."""
+    cleaned = re.sub(r'[:\\/*?\[\]]', '-', name).strip()
+    return cleaned[:31]
+
+
+def autofit_columns(ws):
+    """Resize each column in a worksheet to fit its longest value."""
+    for i, col in enumerate(ws.columns, 1):  # enumerate gives you the column index
+        max_length = 0
+        col_letter = get_column_letter(i)
+        for cell in col:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[col_letter].width = max_length + 2
+
+
+def apply_banded_rows(ws, start_row: int = 2):
+    """Apply alternating row shading starting from start_row."""
+    fill = PatternFill(start_color="DDDDDD", end_color="DDDDDD", fill_type="solid")
+    for row in ws.iter_rows(min_row=start_row, max_row=ws.max_row):
+        if row[0].row % 2 == 0:  # even-numbered rows
+            for cell in row:
+                cell.fill = fill
+
+def style_header_row(ws, row_num: int = 1):
+    """Style a header row with bold font, background color, and centered text."""
+    header_font = Font(name="Comic Sans MS", bold=True, size=12, color="FFFFFF")
+    header_fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")
+    header_alignment = Alignment(horizontal="center", vertical="center")
+
+    for cell in ws[row_num]:
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_alignment
+
+
+@login_required
+def sort2support(request):
+    students = Student.objects.filter(teacher=request.user)
+    lesson_1 = request.session.get("lesson_1")
+    lesson_2 = request.session.get("lesson_2")
+
+    student_data = [{"name": s.name, "score1": s.ufli_score_1, "score2": s.ufli_score_2} for s in students]
+    html_preview = assign_group(student_data, lesson_1, lesson_2)
+
+    # Optional: store grouped data for export
+    grouped_data = []
+    for concept_num, lesson in enumerate([lesson_1, lesson_2], start=1):
+        if lesson:
+            max_points = lesson["total_points"]
+            concept_name = lesson["concept"]
+            groups = {"Red": [], "Yellow": [], "Green": [], "Blue": []}
+            for s in student_data:
+                score = s[f"score{concept_num}"]
+                color = get_color(score, max_points) or "Missing"
+                groups.setdefault(color, []).append(s)
+            grouped_data.append({
+                "concept_name": concept_name,
+                "groups": [
+                    {"group_name": color, "students": groups[color]}
+                    for color in ["Red", "Yellow", "Green", "Blue"]
+                ]
+            })
+
+    request.session["grouped_data"] = grouped_data
+
+    return render(request, "excel_app/sort2support.html", {
+        "students": students,
+        "grouping_preview": html_preview,
+    })

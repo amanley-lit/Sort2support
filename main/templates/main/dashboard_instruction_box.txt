@@ -1,0 +1,40 @@
+<div class="instruction-box">
+  <h3 class="instruction-heading">📘 Teacher Instructions</h3>
+  <p><strong>How to use this dashboard:</strong></p>
+
+  <ul>
+    {% if not file_uploaded %}
+      <li>
+        <strong>Load your weekly assessment data:</strong>
+        Use names and a score for each concept taught this week.<br>
+        <span class="indent">We will populate exact weekly concepts after data is collected.</span>
+      </li>
+
+      <li>
+        <strong>Option 1: Have a previously saved roster?</strong>
+        You can load your saved roster to update scores!
+      </li>
+
+      <li>
+        <strong>Option 2: Upload an Excel file</strong> — include headings: <em>Name</em>, <em>Score 1</em>, and <em>Score 2</em>.<br>
+        <span class="indent">We’ll merge it with your saved roster, highlight missing scores, and remember your students for next time.</span>
+      </li>
+
+      <li>
+        <strong>Option 3: No file?</strong> You can still build your class manually:
+        <ul>
+          <li><strong>Enter manually</strong> — type each student name and score.</li>
+        </ul>
+      </li>
+    {% else %}
+      <li><strong>Students uploaded successfully!</strong> Scroll down to preview and save your class.</li>
+    {% endif %}
+
+    <li>Use <strong>Clear Sort</strong> to reset scores to zero, or <strong>Reset Entire Class</strong> to start fresh.</li>
+  </ul>
+
+  <p class="instruction-note">
+    <strong>Score 1 & Score 2:</strong> Each score reflects student performance on the two concepts taught that week. Scores are entered after end-of-week assessment.
+  </p>
+</div>
+

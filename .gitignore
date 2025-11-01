@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Django
+*.log
+*.pot
+db.sqlite3
+media/
+venv/
+staticfiles/
+
+# Migrations (optional)
+*/migrations/
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Environment
+.env
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Excel exports (optional)
+*.xlsx

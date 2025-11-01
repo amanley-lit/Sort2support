@@ -1,0 +1,391 @@
+
+<!--Success or error messages -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+<!-- Manual entry form -->
+<form method="post">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  <table id="studentTable">
+    {% for form in formset %}
+      <tr class="student-row">
+        <td>{{ form.name }}</td>
+        <td>{{ form.ufli_score_1 }}</td>
+        <td>{{ form.ufli_score_2 }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <button type="submit" id="saveBtn" class="btn btn-success" disabled>
+    ✅ Save Students
+  </button>
+</form>
+
+<!-- Add Row Button -->
+<button type="button" id="addRowBtn" class="btn btn-secondary" title="Start with 5 rows. Click to add more.">
+  ➕ Add Row
+</button>
+
+<!-- JavaScript -->
+<script>
+  const saveBtn = document.getElementById("saveBtn");
+  const table = document.getElementById("studentTable");
+  const totalForms = document.getElementById("id_form-TOTAL_FORMS");
+
+  function checkNames() {
+    const nameInputs = document.querySelectorAll("input[name^='form-'][name$='-name']");
+    let hasName = false;
+    nameInputs.forEach(input => {
+      if (input.value.trim() !== "") {
+        hasName = true;
+      }
+    });
+    saveBtn.disabled = !hasName;
+  }
+
+  // Initial binding
+  document.querySelectorAll("input[name^='form-'][name$='-name']").forEach(input => {
+    input.addEventListener("input", checkNames);
+  });
+
+  // Add Row logic
+  const addRowBtn = document.getElementById("addRowBtn");
+  addRowBtn.addEventListener("click", () => {
+    const currentCount = parseInt(totalForms.value);
+    const newRow = document.querySelector(".student-row").cloneNode(true);
+
+    newRow.querySelectorAll("input, select").forEach(el => {
+      if (el.name) {
+        el.name = el.name.replace(`-${currentCount - 1}-`, `-${currentCount}-`);
+        el.id = el.id.replace(`-${currentCount - 1}-`, `-${currentCount}-`);
+        if (el.tagName === "INPUT") el.value = "";
+        if (el.tagName === "SELECT") el.selectedIndex = 0;
+      }
+    });
+
+    table.appendChild(newRow);
+    totalForms.value = currentCount + 1;
+
+    // Bind input listener for new name field
+    const newNameInput = newRow.querySelector("input[name$='-name']");
+    newNameInput.addEventListener("input", checkNames);
+  });
+</script>
+{% endblock %}
+
+  <!-- 🧠 Step 2: Select Concepts -->
+  <form method="post" id="scoreForm" action="#groupResults">
+    {% csrf_token %}
+
+    <h3>Select UFLI Concepts</h3>
+    <label for="lesson_1">Concept 1:</label>
+    <select name="lesson_1" id="lesson_1">
+      <option value="">-- None --</option>
+      {% for lesson in ufli_lessons %}
+        <option value="{{ lesson.number }}" data-max="{{ lesson.total_points }}"
+          {% if lesson_1 and lesson_1.number == lesson.number %}selected{% endif %}>
+          Lesson {{ lesson.number }} – {{ lesson.concept }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label for="lesson_2">Concept 2:</label>
+    <select name="lesson_2" id="lesson_2">
+      <option value="">-- None --</option>
+      {% for lesson in ufli_lessons %}
+        <option value="{{ lesson.number }}" data-max="{{ lesson.total_points }}"
+          {% if lesson_2 and lesson_2.number == lesson.number %}selected{% endif %}>
+          Lesson {{ lesson.number }} – {{ lesson.concept }}
+        </option>
+      {% endfor %}
+    </select>
+
+<!-- <hr>
+    <h2>Preview Students</h2>
+    <table class="assessment-table">
+      <thead>
+        <tr><th>Name</th><th>Score 1</th><th>Score 2</th></tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+          <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.ufli_score_1 }}</td>
+            <td>{{ s.ufli_score_2 }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+   
+    <form action="{% url 'main:clear_scores' %}" method="post">
+     {% csrf_token %}
+    <button type="submit" class="btn btn-warning">Clear Scores</button>
+    </form>
+    <!-- Student table -->
+    {% if students %}
+      <h3>Saved Students</h3>
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>
+              {% if lesson_1 %}
+                {{ lesson_1.concept }} (Max {{ lesson_1.total_points }})
+              {% else %}
+                Concept 1
+              {% endif %}
+            </th>
+            <th>
+              {% if lesson_2 %}
+                {{ lesson_2.concept }} (Max {{ lesson_2.total_points }})
+              {% else %}
+                Concept 2
+              {% endif %}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+            <tr>
+              <td><input type="text" name="student_name_{{ forloop.counter }}" value="{{ student.name }}"></td>
+              <td>
+                <select name="ufli_score_1_{{ forloop.counter }}">
+                  <option value="" {% if not student.ufli_score_1 %}selected{% endif %}></option>
+                  {% if lesson_1 %}
+                    {% for s in lesson_1.total_points|get_range %}
+                      <option value="{{ s }}" {% if student.ufli_score_1 == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </td>
+              <td>
+                <select name="ufli_score_2_{{ forloop.counter }}">
+                  <option value="" {% if not student.ufli_score_2 %}selected{% endif %}></option>
+                  {% if lesson_2 %}
+                    {% for s in lesson_2.total_points|get_range %}
+                      <option value="{{ s }}" {% if student.ufli_score_2 == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </form>
+<!-- Save & Sort button -->
+<button type="submit" class="btn sort2support-btn">
+  Sort2Support
+  </button>
+  
+
+
+  <!-- Reset buttons -->
+  <form method="post" style="margin-top: 20px; display: flex; gap: 10px;">
+    {% csrf_token %}
+    <button type="submit" name="reset_saved_scores" value="true" class="btn btn-warning">🧹 Clear Scores Only</button>
+    <button type="submit" name="reset_class" value="true" class="btn btn-danger"
+            onclick="return confirm('Are you sure you want to reset the entire class?')">
+      🔄 Reset Entire Class
+    </button>
+  </form>
+
+  <!-- Grouped results preview -->
+  {% if grouped_html %}
+    <div id="groupResults" style="margin-top: 30px;">
+      <div class="results-layout">
+        <div class="main-results">
+          <div class="collapsible-section">
+            <button type="button" class="collapsible-toggle" onclick="toggleGroupingInfo()">
+              ▶ Grouping Info
+            </button>
+            <div id="groupingInfoContent" class="collapsible-content">
+              <p>
+                Based on:
+                {% if lesson_1 %}
+                  <strong>{{ lesson_1.concept }} (Max {{ lesson_1.total_points }})</strong>
+                {% endif %}
+                {% if lesson_2 %}
+                  and <strong>{{ lesson_2.concept }} (Max {{ lesson_2.total_points }})</strong>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+          <h3>Reorganized Groupings</h3>
+          <div class="table-container">
+            {{ grouped_html|safe }}
+          </div>
+        </div>
+
+
+        <div class="side-keys">
+          <!-- 🎨 Reference Table -->
+          <h3>How Students Are Grouped</h3>
+          <p>Each student's score is converted to a percentage based on the total possible points for the concept. This percentage determines their color group:</p>
+
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th>Score Range</th>
+                <th>Color Group</th>
+                <th>Interpretation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0–25%</td><td style="color: red;"><strong>Red</strong></td><td>Needs intensive support</td></tr>
+              <tr><td>26–60%</td><td style="color: orange;"><strong>Yellow</strong></td><td>Emerging understanding</td></tr>
+              <tr><td>61–99%</td><td style="color: green;"><strong>Green</strong></td><td>Approaching mastery</td></tr>
+              <tr><td>100%</td><td style="color: blue;"><strong>Blue</strong></td><td>Ready to move on</td></tr>
+            </tbody>
+          </table>
+
+          <!-- 🧀 Snack Legend -->
+          <h3>Snack Group Legend</h3>
+          <ul class="snack-legend">
+            <li><img src="{% static 'main/images/chips.png' %}" class="snack-icon"> Chips – Yellow – Emerging readers</li>
+            <li><img src="{% static 'main/images/salsa.png' %}" class="snack-icon"> Salsa – Red – Needs support</li>
+            <li><img src="{% static 'main/images/queso.png' %}" class="snack-icon"> Queso – Orange – Building fluency</li>
+            <li><img src="{% static 'main/images/guac.png' %}" class="snack-icon"> Guac – Green – Ready to stretch</li>
+          </ul>
+        </div> <!-- end side-keys -->
+      </div> <!-- end results-layout -->
+    </div> <!-- end groupResults -->
+  {% endif %}
+      <!-- Student table -->
+    {% if students %}
+      <h3>Saved Students</h3>
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>
+              {% if lesson_1 %}
+                {{ lesson_1.concept }} (Max {{ lesson_1.total_points }})
+              {% else %}
+                Concept 1
+              {% endif %}
+            </th>
+            <th>
+              {% if lesson_2 %}
+                {{ lesson_2.concept }} (Max {{ lesson_2.total_points }})
+              {% else %}
+                Concept 2
+              {% endif %}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+            <tr>
+              <td><input type="text" name="student_name_{{ forloop.counter }}" value="{{ student.name }}"></td>
+              <td>
+                <select name="ufli_score_1_{{ forloop.counter }}">
+                  <option value="" {% if not student.ufli_score_1 %}selected{% endif %}></option>
+                  {% if lesson_1 %}
+                    {% for s in lesson_1.total_points|get_range %}
+                      <option value="{{ s }}" {% if student.ufli_score_1 == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </td>
+              <td>
+                <select name="ufli_score_2_{{ forloop.counter }}">
+                  <option value="" {% if not student.ufli_score_2 %}selected{% endif %}></option>
+                  {% if lesson_2 %}
+                    {% for s in lesson_2.total_points|get_range %}
+                      <option value="{{ s }}" {% if student.ufli_score_2 == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  {% endif %}
+                </select>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Save & Sort button -->
+      <button type="submit" name="save_and_sort" value="true" class="btn btn-primary">
+        🚀 {% include "main/_logo.html" %}
+      </button>
+    {% endif %}
+  </form>
+
+  <!-- Reset buttons -->
+  <form method="post" style="margin-top: 20px; display: flex; gap: 10px;">
+    {% csrf_token %}
+    <button type="submit" name="reset_scores" value="true" class="btn btn-warning">🧹 Clear Scores Only</button>
+    <button type="submit" name="clear_names" value="true" class="btn btn-danger"
+            onclick="return confirm('Are you sure you want to reset the entire class?')">
+      🔄 Reset Entire Class
+    </button>
+  </form>
+
+  <!-- Grouped results preview -->
+  {% if grouped_html %}
+    <div id="groupResults" style="margin-top: 30px;">
+      <div class="results-layout">
+        <div class="main-results">
+          <div class="collapsible-section">
+            <button type="button" class="collapsible-toggle" onclick="toggleGroupingInfo()">
+              ▶ Grouping Info
+            </button>
+            <div id="groupingInfoContent" class="collapsible-content">
+              <p>
+                Based on:
+                {% if lesson_1 %}
+                  <strong>{{ lesson_1.concept }} (Max {{ lesson_1.total_points }})</strong>
+                {% endif %}
+                {% if lesson_2 %}
+                  and <strong>{{ lesson_2.concept }} (Max {{ lesson_2.total_points }})</strong>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+          <h3>Reorganized Groupings</h3>
+          <div class="table-container">
+            {{ grouped_html|safe }}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const entryMode = document.getElementById("entryMode");
+  const classSizeEntry = document.getElementById("classSizeEntry");
+  const pasteEntry = document.getElementById("pasteEntry");
+  const manualEntry = document.getElementById("manualEntry");
+
+  function toggleEntryMode() {
+    const mode = entryMode.value;
+    classSizeEntry.style.display = (mode === "size") ? "block" : "none";
+    pasteEntry.style.display = (mode === "paste") ? "block" : "none";
+    manualEntry.style.display = (mode === "manual") ? "block" : "none";
+  }
+
+  // Run once on page load
+  toggleEntryMode();
+
+  // Run whenever the dropdown changes
+  entryMode.addEventListener("change", toggleEntryMode);
+});
+</script>
+
+{% block scripts %}
+  <script src="{% static 'main/js/dashboard.js' %}"></script>
+{% endblock %}
+{% endcomment %}
+
